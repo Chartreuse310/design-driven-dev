@@ -7,3 +7,4 @@ dist/
 .astro/
 .vercel/
 design-driven-dev-vault/
+.vercel

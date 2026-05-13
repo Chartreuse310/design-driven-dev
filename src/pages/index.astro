@@ -1,91 +1,340 @@
 ---
 import BaseLayout from '../layouts/Base.astro'
 import { listContent } from '../lib/content'
+import { readdirSync } from 'fs'
 
 const allActions = listContent('actions')
-
-const bigActions = allActions.filter(a => !a.frontmatter.parent)
-const activeBig = bigActions.filter(a => a.frontmatter.status === '进行中')
-const activeSmall = allActions.filter(a => a.frontmatter.status === '进行中' && a.frontmatter.parent)
-
 const allJournal = listContent('journal')
-const recentJournal = allJournal
-  .sort((a, b) => b.slug.localeCompare(a.slug))
-  .slice(0, 7)
-
+const bigActions = allActions.filter(a => !a.frontmatter.parent)
+const activeActions = allActions.filter(a => a.frontmatter.status === '进行中')
+const recentJournal = allJournal.sort((a, b) => b.slug.localeCompare(a.slug)).slice(0, 8)
 const checkClass = (s: string) => s === '已完成' ? 'done' : s === '进行中' ? 'active' : 'paused'
 const statusIcon = (s: string) => s === '已完成' ? '✓' : ''
+
+// Heatmap
+function fmt(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+const activeDates = new Set(allJournal.map(j => j.slug))
+const today = new Date()
+const todayStr = fmt(today)
+const startRef = new Date(today)
+startRef.setDate(startRef.getDate() - 364)
+const startDow = startRef.getDay()
+startRef.setDate(startRef.getDate() - (startDow === 0 ? 6 : startDow - 1))
+
+interface Cell { x: number; y: number; date: string; level: number; isToday: boolean }
+const cells: Cell[] = []
+const cur = new Date(startRef)
+for (let w = 0; w < 53; w++) {
+  for (let d = 0; d < 7; d++) {
+    const ds = fmt(cur)
+    if (cur > today) break
+    cells.push({
+      x: w * 13,
+      y: d * 13,
+      date: ds,
+      level: activeDates.has(ds) ? 2 : 0,
+      isToday: ds === todayStr
+    })
+    cur.setDate(cur.getDate() + 1)
+  }
+}
+
+const weekCount = Math.ceil(cells.length / 7)
+const svgW = weekCount * 13 + 1
+const svgH = 7 * 13 + 1
 ---
 
-<BaseLayout title="首页" currentPath="home">
-  <div class="page-header">
-    <h1>Design-Driven Dev</h1>
-    <p class="page-subtitle">从设计出发，学习全栈技术。</p>
-  </div>
-
-  <h2>进行中</h2>
-  {activeBig.length === 0 && activeSmall.length === 0 ? (
-    <p class="empty">暂无进行中的行动</p>
-  ) : (
-    <div class="task-list">
-      {activeBig.map(action => {
-        const children = allActions.filter(a => a.frontmatter.parent === action.slug && a.frontmatter.status === '进行中')
-        return (
-          <>
-            <a href={`/actions/${action.slug}`} class="task-row">
-              <span class={`task-check ${checkClass(action.frontmatter.status)}`}>{statusIcon(action.frontmatter.status)}</span>
-              <div class="task-body">
-                <div class="task-title">{action.slug}</div>
-                <div class="task-meta">
-                  <span class={`status status-${action.frontmatter.status}`}>{action.frontmatter.status}</span>
-                  {children.length > 0 && <span class="tag">{children.length} 个子行动</span>}
-                </div>
-              </div>
-            </a>
-            {children.map(child => (
-              <a href={`/actions/${child.slug}`} class="task-row indent">
-                <span class={`task-check ${checkClass(child.frontmatter.status)}`}>{statusIcon(child.frontmatter.status)}</span>
-                <div class="task-body">
-                  <div class="task-title">{child.slug}</div>
-                </div>
-              </a>
-            ))}
-          </>
-        )
-      })}
-    </div>
-  )}
-
-  {recentJournal.length > 0 && (
-    <>
-      <h2>最近日记</h2>
-      {recentJournal.map(entry => (
-        <div class="journal-item">
-          <a href={`/journal/${entry.slug}`}>
-            <span class="journal-date-dot"></span>
-            {entry.slug}
-          </a>
+<BaseLayout title="首页" currentPath="home" wide>
+  <div class="home">
+    <section class="hero">
+      <h1>Design-Driven Dev</h1>
+      <p class="hero-tagline">从设计出发，学习全栈技术。</p>
+      <p class="hero-desc">一个设计师的学习笔记仓库，记录从零开始的完整历程——不是教程的搬运，而是自己的理解和踩过的坑。</p>
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-num">{bigActions.length}</span>
+          <span class="stat-label">行动</span>
         </div>
-      ))}
-    </>
-  )}
-
-  {bigActions.length > 0 && (
-    <>
-      <h2>全部大行动</h2>
-      <div class="task-list">
-        {bigActions.map(action => (
-          <a href={`/actions/${action.slug}`} class="task-row">
-            <span class={`task-check ${checkClass(action.frontmatter.status)}`}>{statusIcon(action.frontmatter.status)}</span>
-            <div class="task-body">
-              <div class="task-title">{action.slug}</div>
-              <div class="task-meta">
-                <span class={`status status-${action.frontmatter.status}`}>{action.frontmatter.status}</span>
-              </div>
-            </div>
-          </a>
-        ))}
+        <div class="stat-sep" />
+        <div class="stat">
+          <span class="stat-num">{allJournal.length}</span>
+          <span class="stat-label">日志</span>
+        </div>
+        <div class="stat-sep" />
+        <div class="stat">
+          <span class="stat-num">{allJournal.length}</span>
+          <span class="stat-label">天活跃</span>
+        </div>
       </div>
-    </>
-  )}
+    </section>
+
+    <section class="heatmap-section">
+      <div class="section-head">
+        <h2>活跃记录</h2>
+        <span class="section-hint">过去一年的学习活动</span>
+      </div>
+      <div class="heatmap-scroll">
+        <svg viewBox={`0 0 ${svgW} ${svgH}`} class="heatmap-svg" xmlns="http://www.w3.org/2000/svg">
+          {cells.map(c => (
+            <rect
+              x={c.x}
+              y={c.y}
+              width={11}
+              height={11}
+              rx={2}
+              class:list={[
+                'hm',
+                c.level === 0 && 'hm-0',
+                c.level >= 1 && 'hm-1',
+                c.isToday && 'hm-today'
+              ]}
+            >
+              <title>{c.date}</title>
+            </rect>
+          ))}
+        </svg>
+      </div>
+      <div class="heatmap-legend">
+        <span>少</span>
+        <span class="hm-sample hm-0" />
+        <span class="hm-sample hm-1" />
+        <span class="hm-sample hm-2" />
+        <span>多</span>
+      </div>
+    </section>
+
+    <section class="grid-2col">
+      <div class="col">
+        <h2>行动</h2>
+        {activeActions.length === 0 ? (
+          <p class="empty">暂无进行中的行动</p>
+        ) : (
+          <ul class="task-list">
+            {activeActions.map(action => (
+              <li>
+                <a href={`/actions/${action.slug}`} class="task-row">
+                  <span class={`task-check ${checkClass(action.frontmatter.status)}`} />
+                  <div class="task-body">
+                    <div class="task-title">{action.frontmatter.title || action.slug}</div>
+                    <div class="task-meta">
+                      <span class={`status status-${action.frontmatter.status}`}>{action.frontmatter.status}</span>
+                    </div>
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {bigActions.length > 0 && (
+          <>
+            <h2 class="section-sub">全部行动</h2>
+            <ul class="task-list">
+              {bigActions.map(action => (
+                <li>
+                  <a href={`/actions/${action.slug}`} class="task-row">
+                    <span class={`task-check ${checkClass(action.frontmatter.status)}`}>{statusIcon(action.frontmatter.status)}</span>
+                    <div class="task-body">
+                      <div class="task-title">{action.frontmatter.title || action.slug}</div>
+                      <div class="task-meta">
+                        <span class={`status status-${action.frontmatter.status}`}>{action.frontmatter.status}</span>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+
+      <div class="col">
+        <h2>最近日志</h2>
+        {recentJournal.length === 0 ? (
+          <p class="empty">暂无日志</p>
+        ) : (
+          <ul class="journal-list">
+            {recentJournal.map(entry => (
+              <li>
+                <a href={`/journal/${entry.slug}`}>
+                  <span class="journal-dot" />
+                  <span class="journal-date">{entry.slug}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
+  </div>
 </BaseLayout>
+
+<style>
+  .home { display: flex; flex-direction: column; gap: 2rem; }
+
+  /* Hero */
+  .hero {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero h1 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.2rem;
+  }
+
+  .hero-tagline {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.6rem;
+  }
+
+  .hero-desc {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    max-width: 520px;
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+  }
+
+  .stats {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .stat {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+  }
+
+  .stat-num {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--blue);
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .stat-sep {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  /* Heatmap */
+  .heatmap-section {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-head h2 { margin: 0; border: none; padding: 0; }
+
+  .section-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .heatmap-scroll {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  .heatmap-svg {
+    display: block;
+  }
+
+  .hm { stroke: none; }
+  .hm-0 { fill: #f0f0f0; }
+  .hm-1 { fill: #f5b97a; }
+  .hm-2 { fill: #e8913a; }
+  .hm-today { stroke: var(--blue); stroke-width: 1.5; }
+
+  .heatmap-legend {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    justify-content: flex-end;
+    margin-top: 0.3rem;
+  }
+
+  .hm-sample {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border-radius: 2px;
+  }
+
+  .hm-sample.hm-0 { background: #f0f0f0; }
+  .hm-sample.hm-1 { background: #f5b97a; }
+  .hm-sample.hm-2 { background: #e8913a; }
+
+  /* Two-column grid */
+  .grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  .col { min-width: 0; }
+
+  .section-sub { margin-top: 1.5rem; }
+
+  .journal-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .journal-list li {
+    padding: 0.55rem 0;
+    border-bottom: 1px solid #f2f2f2;
+  }
+
+  .journal-list a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.1s;
+  }
+
+  .journal-list a:hover { color: var(--blue); }
+
+  .journal-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--blue);
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    .grid-2col {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+</style>

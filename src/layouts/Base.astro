@@ -4,9 +4,10 @@ import Sidebar from '../components/Sidebar.astro'
 interface Props {
   title: string
   currentPath?: string
+  wide?: boolean
 }
 
-const { title, currentPath = '' } = Astro.props
+const { title, currentPath = '', wide = false } = Astro.props
 ---
 
 <!doctype html>
@@ -19,7 +20,7 @@ const { title, currentPath = '' } = Astro.props
   <body>
     <Sidebar currentPath={currentPath} />
     <main>
-      <div class="main-inner">
+      <div class:list={['main-inner', wide && 'main-wide']}>
         <slot />
       </div>
     </main>
@@ -71,6 +72,10 @@ const { title, currentPath = '' } = Astro.props
     margin: 0 auto;
     padding: 2rem 2.5rem 4rem;
     animation: fadeIn 0.3s ease;
+  }
+
+  .main-wide {
+    max-width: 960px;
   }
 
   @keyframes fadeIn {

@@ -13,6 +13,10 @@ const { currentPath = '' } = Astro.props
   </div>
 
   <nav class="sidebar-nav">
+    <a href="/" class:list={['nav-item', currentPath === 'home' && 'active']}>
+      <span class="nav-icon">⌂</span>
+      <span class="nav-label">首页</span>
+    </a>
     <a href="/actions" class:list={['nav-item', currentPath === 'actions' && 'active']}>
       <span class="nav-icon">⚑</span>
       <span class="nav-label">行动</span>
