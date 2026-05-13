@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../../layouts/Base.astro'
+import { listContent } from '../../lib/content'
+
+const allJournal = listContent('journal')
+const sorted = allJournal.sort((a, b) => b.slug.localeCompare(a.slug))
+---
+
+<BaseLayout title="日志" currentPath="journal">
+  <div class="page-header">
+    <h1>日志</h1>
+    <p class="page-subtitle">每日索引，链接到当天正在进行的行动。</p>
+  </div>
+  {sorted.length === 0 ? <p class="empty">暂无日记。</p> : (
+    <>
+      {sorted.map(entry => (
+        <div class="journal-item">
+          <a href={`/journal/${entry.slug}`}>
+            <span class="journal-date-dot"></span>
+            {entry.slug}
+          </a>
+        </div>
+      ))}
+    </>
+  )}
+</BaseLayout>

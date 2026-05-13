@@ -21,16 +21,20 @@
 ## 仓库结构
 
 ```
-plans/          目标与计划（长期目标 + 短期阶段）
-journal/        每日记录
-notes/          知识笔记（按技术领域分类）
-problems/       遇到的问题与解决方案
-reflections/    阶段复盘
-projects/       实战项目
-resources/      资源收集
+actions/         行动（大行动 + 小行动，自包含笔记/踩坑/复盘）
+journal/         每日记录（索引 + 感受）
+resources/       参考资料
 ```
 
+使用 [Astro](https://astro.build/) 构建静态站点。内容为 `.md` 格式，通过 Obsidian 编辑。
+
 详见 [FRAMEWORK.md](FRAMEWORK.md)。
+
+## 工作流程
+
+1. 在 Obsidian 中编辑 `design-driven-dev-vault/`（gitignored）
+2. 同步到仓库根目录（自动转换 wiki-link → markdown link）
+3. Astro 构建静态站点并部署
 
 ## 关于语言
 

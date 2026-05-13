@@ -1,6 +1,7 @@
 ---
+title: 001-solution-z
 status: 进行中
-tags: [goal, long-term, solution-z]
+tags: [action, big, solution-z]
 ---
 
 # 001 - Solution-Z：行动管理可视化软件
@@ -9,8 +10,8 @@ tags: [goal, long-term, solution-z]
 
 **Obsidian 系统结构**：领域（大分类）→ 行为 → 行为 → 行为（嵌套树）。每个行为是一个带 frontmatter 的 Markdown 文档，包含行动类型、开始日期、结束日期等属性。Solution-Z 将这套逻辑可视化，提供比 Obsidian 更直观的操作体验——目标是像滴答清单一样易用，但逻辑体系完全不同。
 
-> 设计文档 → [[resources/solution-z/DESIGN.md]]
-> 技术分析 → [[resources/solution-z/docs/tech-stack-analysis.md]]
+> 设计文档 → [DESIGN](../resources/solution-z/DESIGN.mdoc)
+> 技术分析 → [tech-stack-analysis](../resources/solution-z/docs/tech-stack-analysis.mdoc)
 
 ## 为什么
 
@@ -29,19 +30,30 @@ tags: [goal, long-term, solution-z]
 
 选型理由：完全对齐学习兴趣（Vue、Electron、Tailwind、TypeScript、Vite、pnpm）。Electron 性能对任务管理器完全够用（滴答清单就是 Electron），且不需要学 Rust。
 
-## 短期目标
+## 子行动
 
-- → [[plans/001-01-web-basics.md]] — 阶段 1：Web 基础，还原 UI
-- → [[plans/001-02-data-layer.md]] — 阶段 2：数据层，SQLite + CRUD
-- → [[plans/001-03-electron.md]] — 阶段 3：Electron 桌面化
-- → [[plans/001-04-interaction.md]] — 阶段 4：交互打磨
-- → [[plans/001-05-extensions.md]] — 阶段 5：扩展功能
+- → [001-01-web-basics](001-01-web-basics.mdoc) — 阶段 1：Web 基础，还原 UI
+- → [001-02-data-layer](001-02-data-layer.mdoc) — 阶段 2：数据层，SQLite + CRUD
+- → [001-03-electron](001-03-electron.mdoc) — 阶段 3：Electron 桌面化
+- → [001-04-interaction](001-04-interaction.mdoc) — 阶段 4：交互打磨
+- → [001-05-extensions](001-05-extensions.mdoc) — 阶段 5：扩展功能
 
 ## 设计文档管理
 
 设计文档目前放在 `resources/solution-z/`，后续新增/更新的设计文档也放在此处。位置待定，后续讨论。
 
-## 当前进度
+## 笔记
 
-- 尚未开始，当前在学习前端基础知识
-- 前端技术栈概览 → [[notes/frontend/前端技术栈：从夯到拉.md]]
+- 前端技术栈概览 → [前端技术栈：从夯到拉](001-note-frontend-tech-stack.mdoc)
+
+## 踩坑记录
+
+（暂无）
+
+## 复盘
+
+（尚未开始）
+
+## 关联 journal
+
+（暂无）

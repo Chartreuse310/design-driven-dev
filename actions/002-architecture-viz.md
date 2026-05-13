@@ -1,6 +1,7 @@
 ---
+title: 002-architecture-viz
 status: 暂缓
-tags: [goal, long-term, architecture, threejs]
+tags: [action, big, architecture, threejs]
 ---
 
 # 002 - 3D 建筑可视化
@@ -16,10 +17,22 @@ tags: [goal, long-term, architecture, threejs]
 - Three.js / WebGPU
 - 待定，等 Solution-Z 稳定后再展开
 
-## 短期目标
+## 子行动
 
 （待规划）
 
-## 当前进度
+## 笔记
 
-- 尚未开始
+（暂无）
+
+## 踩坑记录
+
+（暂无）
+
+## 复盘
+
+（尚未开始）
+
+## 关联 journal
+
+（暂无）

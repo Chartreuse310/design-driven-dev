@@ -21,16 +21,20 @@ Tech stack: Vue 3 · Electron · Tailwind CSS · SQLite · TypeScript
 ## Repo structure
 
 ```
-plans/          Goals & plans (long-term goals + short-term phases)
-journal/        Daily journal
-notes/          Knowledge notes (organized by tech domain)
-problems/       Problems encountered & solutions
-reflections/    Phase retrospectives
-projects/       Hands-on projects
-resources/      Collected resources
+actions/         Actions (big + small, self-contained with notes/problems/reflection)
+journal/         Daily journal (index + thoughts)
+resources/       Reference material
 ```
 
+Built with [Astro](https://astro.build/). Content is in `.md` format, edited via Obsidian.
+
 See [FRAMEWORK.md](FRAMEWORK.md) for details.
+
+## Workflow
+
+1. Edit in Obsidian (`design-driven-dev-vault/`, gitignored)
+2. Sync to repo root (auto-converts wiki-links → markdown links)
+3. Astro builds the static site and deploys
 
 ## About language
 

@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/Base.astro'
+import { listContent } from '../lib/content'
+
+const allActions = listContent('actions')
+
+const bigActions = allActions.filter(a => !a.frontmatter.parent)
+const activeBig = bigActions.filter(a => a.frontmatter.status === '进行中')
+const activeSmall = allActions.filter(a => a.frontmatter.status === '进行中' && a.frontmatter.parent)
+
+const allJournal = listContent('journal')
+const recentJournal = allJournal
+  .sort((a, b) => b.slug.localeCompare(a.slug))
+  .slice(0, 7)
+
+const checkClass = (s: string) => s === '已完成' ? 'done' : s === '进行中' ? 'active' : 'paused'
+const statusIcon = (s: string) => s === '已完成' ? '✓' : ''
+---
+
+<BaseLayout title="首页" currentPath="home">
+  <div class="page-header">
+    <h1>Design-Driven Dev</h1>
+    <p class="page-subtitle">从设计出发，学习全栈技术。</p>
+  </div>
+
+  <h2>进行中</h2>
+  {activeBig.length === 0 && activeSmall.length === 0 ? (
+    <p class="empty">暂无进行中的行动</p>
+  ) : (
+    <div class="task-list">
+      {activeBig.map(action => {
+        const children = allActions.filter(a => a.frontmatter.parent === action.slug && a.frontmatter.status === '进行中')
+        return (
+          <>
+            <a href={`/actions/${action.slug}`} class="task-row">
+              <span class={`task-check ${checkClass(action.frontmatter.status)}`}>{statusIcon(action.frontmatter.status)}</span>
+              <div class="task-body">
+                <div class="task-title">{action.slug}</div>
+                <div class="task-meta">
+                  <span class={`status status-${action.frontmatter.status}`}>{action.frontmatter.status}</span>
+                  {children.length > 0 && <span class="tag">{children.length} 个子行动</span>}
+                </div>
+              </div>
+            </a>
+            {children.map(child => (
+              <a href={`/actions/${child.slug}`} class="task-row indent">
+                <span class={`task-check ${checkClass(child.frontmatter.status)}`}>{statusIcon(child.frontmatter.status)}</span>
+                <div class="task-body">
+                  <div class="task-title">{child.slug}</div>
+                </div>
+              </a>
+            ))}
+          </>
+        )
+      })}
+    </div>
+  )}
+
+  {recentJournal.length > 0 && (
+    <>
+      <h2>最近日记</h2>
+      {recentJournal.map(entry => (
+        <div class="journal-item">
+          <a href={`/journal/${entry.slug}`}>
+            <span class="journal-date-dot"></span>
+            {entry.slug}
+          </a>
+        </div>
+      ))}
+    </>
+  )}
+
+  {bigActions.length > 0 && (
+    <>
+      <h2>全部大行动</h2>
+      <div class="task-list">
+        {bigActions.map(action => (
+          <a href={`/actions/${action.slug}`} class="task-row">
+            <span class={`task-check ${checkClass(action.frontmatter.status)}`}>{statusIcon(action.frontmatter.status)}</span>
+            <div class="task-body">
+              <div class="task-title">{action.slug}</div>
+              <div class="task-meta">
+                <span class={`status status-${action.frontmatter.status}`}>{action.frontmatter.status}</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </>
+  )}
+</BaseLayout>

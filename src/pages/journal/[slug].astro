@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/Base.astro'
+import { listContent, readContent } from '../../lib/content'
+
+export async function getStaticPaths() {
+  const journal = listContent('journal')
+  return journal.map(e => ({ params: { slug: e.slug } }))
+}
+
+const { slug } = Astro.params
+const { html } = readContent('journal', slug!)
+---
+
+<BaseLayout title={slug!} currentPath="journal">
+  <a href="/journal" class="back-link">← 日志</a>
+  <article>
+    <div set:html={html} />
+  </article>
+</BaseLayout>

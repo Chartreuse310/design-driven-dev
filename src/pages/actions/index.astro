@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../layouts/Base.astro'
+import { listContent } from '../../lib/content'
+
+const allActions = listContent('actions')
+
+const bigActions = allActions.filter(a => !a.frontmatter.parent)
+const smallActions = allActions.filter(a => a.frontmatter.parent)
+
+const checkClass = (s: string) => s === '已完成' ? 'done' : s === '进行中' ? 'active' : 'paused'
+const statusIcon = (s: string) => s === '已完成' ? '✓' : ''
+---
+
+<BaseLayout title="行动" currentPath="actions">
+  <div class="page-header">
+    <h1>行动</h1>
+    <p class="page-subtitle">大行动包含小行动，每个行动自包含笔记、踩坑与复盘。</p>
+  </div>
+
+  {bigActions.map(action => {
+    const children = smallActions.filter(a => a.frontmatter.parent === action.slug)
+    return (
+      <>
+        <h2>{action.slug}</h2>
+        <div class="task-list">
+          <a href={`/actions/${action.slug}`} class="task-row">
+            <span class={`task-check ${checkClass(action.frontmatter.status)}`}>{statusIcon(action.frontmatter.status)}</span>
+            <div class="task-body">
+              <div class="task-title">{action.slug}</div>
+              <div class="task-meta">
+                <span class={`status status-${action.frontmatter.status}`}>{action.frontmatter.status}</span>
+                {(action.frontmatter.tags || []).filter((t: string) => t !== 'action' && t !== 'big').map((tag: string) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            </div>
+          </a>
+          {children.map(child => (
+            <a href={`/actions/${child.slug}`} class="task-row indent">
+              <span class={`task-check ${checkClass(child.frontmatter.status)}`}>{statusIcon(child.frontmatter.status)}</span>
+              <div class="task-body">
+                <div class="task-title">{child.slug}</div>
+                <div class="task-meta">
+                  <span class={`status status-${child.frontmatter.status}`}>{child.frontmatter.status}</span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </>
+    )
+  })}
+</BaseLayout>

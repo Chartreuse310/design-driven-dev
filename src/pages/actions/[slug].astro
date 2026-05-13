@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/Base.astro'
+import { listContent, readContent } from '../../lib/content'
+
+export async function getStaticPaths() {
+  const actions = listContent('actions')
+  return actions.map(a => ({ params: { slug: a.slug } }))
+}
+
+const { slug } = Astro.params
+const { frontmatter, html } = readContent('actions', slug!)
+const allActions = listContent('actions')
+const action = allActions.find(a => a.slug === slug)
+---
+
+<BaseLayout title={slug!} currentPath="actions">
+  <a href="/actions" class="back-link">← 行动</a>
+  <div class="meta-bar">
+    <span class={`status status-${frontmatter.status}`}>{frontmatter.status}</span>
+    {(frontmatter.tags || []).map((tag: string) => (
+      <span class="tag">{tag}</span>
+    ))}
+    {frontmatter.parent && <span class="tag">← <a href={`/actions/${frontmatter.parent}`}>{frontmatter.parent}</a></span>}
+  </div>
+  <article>
+    <div set:html={html} />
+  </article>
+</BaseLayout>
