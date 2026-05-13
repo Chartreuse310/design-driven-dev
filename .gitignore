@@ -6,3 +6,4 @@ node_modules/
 *.log
 dist/
 .vercel/
+design-driven-dev-vault/
