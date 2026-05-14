@@ -8,17 +8,17 @@ English | [中文](README.md)
 
 ## What is this
 
-I'm a designer learning full-stack development. This repo documents my journey from scratch — not tutorials copied from elsewhere, but my own understanding and the bugs I hit along the way.
+I'm a designer who loves tinkering, hoping to learn enough to go from design to fully working products — and become an inventor! This repo documents my journey from scratch — my little goals, thoughts, and achievements (fingers crossed).
 
 I'm sharing this publicly so I have a place to look back and see how far I've come, and also to connect with others. If you're on a similar learning path or have thoughts on anything here, I'd love to hear from you.
 
 ## What I'm building
 
-**[Solution-Z](resources/solution-z/DESIGN.md)** — a visual twin of my Obsidian-based action management system.
+**[Solution-Z](resources/solution-z/DESIGN-v2.md)** — a cross-platform action management tool that maps directly to my Obsidian vault format.
 
-My Obsidian vault runs a stable action management system with a nested tree structure: Domain → Action → Action → Action. Solution-Z is a visual version of that system — aiming to be as easy to use as TickTick, but with a fundamentally different logic.
+My Obsidian vault runs a stable action management system with a hierarchy of areas → goals → actions. Solution-Z is the editing layer — a Tauri app for recording actions with a timer, tracking time, and exporting back to the vault with zero data loss.
 
-Tech stack: Vue 3 · Electron · Tailwind CSS · SQLite · TypeScript
+Tech stack: Tauri 2.0 · Svelte 5 · Tailwind CSS 4 · SQLite · TypeScript + Rust
 
 ## Repo structure
 
