@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/Base.astro'
+import { listResources, readResource } from '../../lib/content'
+
+export async function getStaticPaths() {
+  const resources = listResources()
+  return resources.map(r => ({ params: { slug: r.slug } }))
+}
+
+const { slug } = Astro.params
+const { frontmatter, html } = readResource(slug!)
+---
+
+<BaseLayout title={slug!} currentPath="resources">
+  <a href="/resources" class="back-link">← 资源</a>
+  <article>
+    <div set:html={html} />
+  </article>
+</BaseLayout>

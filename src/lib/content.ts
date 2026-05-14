@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, statSync } from 'fs'
+import { readFileSync, readdirSync } from 'fs'
 import { join } from 'path'
 import { marked } from 'marked'
 
@@ -22,11 +22,15 @@ function parseFrontmatter(raw: string): { frontmatter: Record<string, any>, body
   return { frontmatter, body: raw.slice(match[0].length) }
 }
 
+function cleanLinks(html: string): string {
+  return html.replace(/href="([^"]*)\.md"/g, 'href="$1"')
+}
+
 export function readContent(collection: string, slug: string): { frontmatter: Record<string, any>, html: string } {
   const filePath = join(process.cwd(), collection, `${slug}.md`)
   const raw = readFileSync(filePath, 'utf-8')
   const { frontmatter, body } = parseFrontmatter(raw)
-  return { frontmatter, html: marked(body) as string }
+  return { frontmatter, html: cleanLinks(marked(body) as string) }
 }
 
 export function listContent(collection: string): { slug: string; frontmatter: Record<string, any> }[] {
@@ -43,4 +47,33 @@ export function listContent(collection: string): { slug: string; frontmatter: Re
   } catch {
     return []
   }
+}
+
+export function listResources(): { slug: string; frontmatter: Record<string, any> }[] {
+  const root = join(process.cwd(), 'resources')
+  const results: { slug: string; frontmatter: Record<string, any> }[] = []
+
+  function walk(sub: string) {
+    const full = join(root, sub)
+    for (const entry of readdirSync(full, { withFileTypes: true })) {
+      const path = sub ? `${sub}/${entry.name}` : entry.name
+      if (entry.isDirectory()) {
+        walk(path)
+      } else if (entry.name.endsWith('.md')) {
+        const slug = path.replace(/\.md$/, '')
+        const raw = readFileSync(join(root, path), 'utf-8')
+        const { frontmatter } = parseFrontmatter(raw)
+        results.push({ slug, frontmatter })
+      }
+    }
+  }
+
+  try { walk(''); return results } catch { return [] }
+}
+
+export function readResource(slug: string): { frontmatter: Record<string, any>, html: string } {
+  const filePath = join(process.cwd(), 'resources', `${slug}.md`)
+  const raw = readFileSync(filePath, 'utf-8')
+  const { frontmatter, body } = parseFrontmatter(raw)
+  return { frontmatter, html: cleanLinks(marked(body) as string) }
 }

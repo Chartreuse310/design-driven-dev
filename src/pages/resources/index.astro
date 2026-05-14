@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../../layouts/Base.astro'
+import { listResources } from '../../lib/content'
+
+const resources = listResources()
+const sorted = resources.sort((a, b) => a.slug.localeCompare(b.slug))
+---
+
+<BaseLayout title="资源" currentPath="resources">
+  <div class="page-header">
+    <h1>资源</h1>
+    <p class="page-subtitle">参考资料与设计文档。</p>
+  </div>
+  {sorted.length === 0 ? <p class="empty">暂无资源。</p> : (
+    <ul class="resource-list">
+      {sorted.map(r => (
+        <li>
+          <a href={`/resources/${r.slug}`}>
+            <span class="resource-dot"></span>
+            <span class="resource-name">{r.slug}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+</BaseLayout>
+
+<style>
+  .resource-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .resource-list li {
+    padding: 0.55rem 0;
+    border-bottom: 1px solid #f2f2f2;
+  }
+
+  .resource-list a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.1s;
+  }
+
+  .resource-list a:hover { color: var(--blue); }
+
+  .resource-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--blue);
+    flex-shrink: 0;
+  }
+
+  .resource-name {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+  }
+</style>
