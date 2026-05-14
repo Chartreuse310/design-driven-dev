@@ -4,47 +4,48 @@ status: 进行中
 tags: [action, big, solution-z]
 ---
 
-# 001 - Solution-Z：行动管理可视化软件
+# 001 - Solution-Z：跨平台行动管理工具
 
-基于 Obsidian 中已稳定运行的行动管理系统，构建一个可视化孪生应用。
+基于 Obsidian vault 的行动管理系统，构建一个跨平台可视化编辑工具。App 是编辑入口，vault 是 Obsidian 浏览层。
 
-**Obsidian 系统结构**：领域（大分类）→ 行为 → 行为 → 行为（嵌套树）。每个行为是一个带 frontmatter 的 Markdown 文档，包含行动类型、开始日期、结束日期等属性。Solution-Z 将这套逻辑可视化，提供比 Obsidian 更直观的操作体验——目标是像滴答清单一样易用，但逻辑体系完全不同。
+**核心理念**：areas 是知识领域，goals 是进行中的目标，actions 是原子级时间记录。三者逐层细化，journal 是 actions 的日索引。
 
-> 设计文档 → [DESIGN](../resources/solution-z/DESIGN.md)
+> 设计文档 v2 → [DESIGN-v2](../resources/solution-z/DESIGN-v2.md)
+> 设计文档 v1 → [DESIGN](../resources/solution-z/DESIGN.md)
 > 技术分析 → [tech-stack-analysis](../resources/solution-z/docs/tech-stack-analysis.md)
+> 实现建议 → [suggestion-cursor](../resources/solution-z/docs/suggestion-cursor.md)
 
 ## 为什么
 
-在 Obsidian 里管理行动已经跑通，但纯文本操作有天然局限——树状嵌套看不清全貌、拖拽排序不直观、状态切换步骤多。Solution-Z 解决这些痛点，同时保留 Obsidian 系统的数据逻辑。
+Obsidian vault 里跑着一套稳定的行动管理系统，但纯文本操作有局限——快速记录不够快、时间追踪靠手动、数据统计做不了。Solution-Z 把这套系统的数据逻辑结构化，提供比 Obsidian 更高效的编辑体验，同时保留无损导出到 vault 的能力。
+
+**v1 → v2 根本转变**：v1 自创了 domains/verbs/actions 抽象模型，v2 直接映射 vault 已有的 areas/goals/actions/resources/notes/journal 体系，导出时零损耗还原为 Markdown 文件。
 
 ## 技术栈
 
 ```
-前端: Vue 3 + Pinia + Vue Router
-桌面: Electron
-样式: Tailwind CSS 4
-数据库: SQLite (via better-sqlite3)
-构建: Vite + electron-builder
-语言: TypeScript
+跨平台: Tauri 2.0 (macOS + iOS + Android)
+前端:   Svelte 5 (编译时框架，最小包体)
+样式:   Tailwind CSS 4
+数据库: SQLite (via tauri-plugin-sql，每端独立存储)
+语言:   TypeScript + Rust
+构建:   Vite
+同步:   坚果云 WebDAV (SQLite 快照交换)
 ```
 
-选型理由：完全对齐学习兴趣（Vue、Electron、Tailwind、TypeScript、Vite、pnpm）。Electron 性能对任务管理器完全够用（滴答清单就是 Electron），且不需要学 Rust。
+选型理由：Tauri 2.0 一套 Rust 核心构建全平台，Svelte 5 编译时优化无运行时开销，SQLite 本地优先零配置。从 Vue 3 + Electron 切换——Tauri 包体 < 15MB vs Electron > 120MB，且支持 iOS/Android。
 
 ## 子行动
 
-- → [001-01-web-basics](001-01-web-basics.md) — 阶段 1：Web 基础，还原 UI
-- → [001-02-data-layer](001-02-data-layer.md) — 阶段 2：数据层，SQLite + CRUD
-- → [001-03-electron](001-03-electron.md) — 阶段 3：Electron 桌面化
-- → [001-04-interaction](001-04-interaction.md) — 阶段 4：交互打磨
-- → [001-05-extensions](001-05-extensions.md) — 阶段 5：扩展功能
-
-## 设计文档管理
-
-设计文档目前放在 `resources/solution-z/`，后续新增/更新的设计文档也放在此处。位置待定，后续讨论。
+- → [001-01-scaffold](001-01-scaffold.md) — Phase 1：Tauri + Svelte 脚手架 + 行动 CRUD + 计时器
+- → [001-02-vault-export](001-02-vault-export.md) — Phase 2：Vault 导出 + Journal 自动生成
+- → [001-03-goals-areas](001-03-goals-areas.md) — Phase 3：目标/领域/资源/笔记/模板
+- → [001-04-mobile-sync](001-04-mobile-sync.md) — Phase 4：手机端 + WebDAV 同步
+- → [001-05-polish](001-05-polish.md) — Phase 5：统计/搜索/深色模式/体验打磨
 
 ## 笔记
 
-- 前端技术栈概览 → [前端技术栈：从夯到拉](001-note-frontend-tech-stack.md)
+- 技术栈分析 → [tech-stack-analysis](../resources/solution-z/docs/tech-stack-analysis.md)（基于 v1，部分结论仍适用）
 
 ## 踩坑记录
 
