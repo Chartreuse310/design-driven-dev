@@ -4,6 +4,8 @@ English | [中文](README.md)
 
 > Starting from design, learning full-stack development, exploring what it takes to bring ideas to life.
 
+**[→ Visit Site](https://design-driven-dev.vercel.app)**
+
 ## What is this
 
 I'm a designer learning full-stack development. This repo documents my journey from scratch — not tutorials copied from elsewhere, but my own understanding and the bugs I hit along the way.
