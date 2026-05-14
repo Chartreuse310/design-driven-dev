@@ -10,6 +10,7 @@ tags: [action, big, solution-z]
 
 **核心理念**：areas 是知识领域，goals 是进行中的目标，actions 是原子级时间记录。三者逐层细化，journal 是 actions 的日索引。
 
+> 项目仓库 → [solution-z](https://github.com/Chartreuse310/solution-z)
 > 设计文档 v2 → [DESIGN-v2](../resources/solution-z/DESIGN-v2.md)
 > 设计文档 v1 → [DESIGN](../resources/solution-z/DESIGN.md)
 > 技术分析 → [tech-stack-analysis](../resources/solution-z/docs/tech-stack-analysis.md)

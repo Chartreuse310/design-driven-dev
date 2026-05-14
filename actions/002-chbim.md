@@ -8,7 +8,7 @@ tags: [action, big, architecture, bim, chinese-historic-building]
 
 将传统营造知识（材份制、地盘分槽、侧样举折等）编码为形式化的规则与参数体系，基于 OpenCascade (OCCT) 实现参数化几何建模，形成面向中国古代木构建筑的 BIM 工具链。
 
-> 资源仓库 → [chbim](../resources/chbim)
+> 项目仓库 → [chbim](https://github.com/Chartreuse310/chbim)
 
 ## 为什么
 
