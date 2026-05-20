@@ -2,6 +2,10 @@ English | [中文](README.md)
 
 # Design-Driven Dev
 
+> ⚠️ **Archived** — This system will be incorporated into a more complete knowledge base and will no longer be maintained.
+
+---
+
 > Starting from design, learning full-stack development, exploring what it takes to bring ideas to life.
 
 **[→ Visit Site](https://design-driven-dev.vercel.app)**
